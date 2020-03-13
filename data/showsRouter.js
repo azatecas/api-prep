@@ -12,8 +12,19 @@ const Shows = require("./helpers/showsModel.js");
             .catch(err => {
                 console.log(err);
                 res.status(500).json({
-                    error: "error on retrieving shows"
+                    errorMessage: "error on retrieving shows"
                 })
+            })
+    })
+
+    router.get('/:id/characters', (req, res) => {
+        Shows
+            .getShowsCharacters(req.params.id)
+            .then(char => {
+                res.status(200).json(char)
+            })
+            .catch(()=> {
+                res.status(500).json({error: "failed to get characters by id"})
             })
     })
 
@@ -27,36 +38,39 @@ const Shows = require("./helpers/showsModel.js");
             .catch(err => {
                 console.log(err);
                 res.status(500).json({
-                    error: "error on adding shows"
+                    errorMessage: "error on adding shows"
                 })
             })
     } )
 
 
     router.put('/:id', (req, res) => {
+        const { id } = req.params;
+        const body = req.body;
         Shows
-            .update(req.params.id, req.body)
-            .then(edited => {
-                res.status(200).json(edited);
+            .update(id, body)
+            .then(() => {
+                res.status(200).json({message: "it has edited", show: body });
             })
             .catch(error => {
                 console.log(error);
                 res.status(500).json({
-                    error: "error on editing shows"
+                    errorMessage: "error on editing shows"
                 })
             })
     })
 
     router.delete('/:id', (req, res) => {
+        const { id } = req.params;
         Shows
-            .remove(req.params.id)
-            .then(show => {
-                res.status(200).json(show);
+            .remove(id)
+            .then(() => {
+                res.status(200).json({message: "deleted successfully", id_of_show_deleted: req.params.id });
             })
             .catch(error => {
                 console.log(error);
                 res.status(500).json({
-                    error: "error on deleting shows"
+                    errorMessage: "error on deleting show"
                 })
             }) 
     })
